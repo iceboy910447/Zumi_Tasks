@@ -8,6 +8,7 @@ import math
 from datetime import datetime
 import matplotlib.pyplot as plt
 import cv2
+from GPSPhoto import gpsphoto
 from Position import Position
 
 rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
@@ -60,6 +61,9 @@ class Zumi(object):
         jpg_name = "{}/Zumicam_{}.jpeg".format(self.directory_two,datetime.now().strftime("%H-%M-%S"))
         #jpg_name = "Zumicam_{}.jpeg".format(datetime.now().strftime("%H-%M-%S"))
         cv2.imwrite(jpg_name,img=np.array(frame))
+        info = gpsphoto.GPSInfo((self.position.last_y, self.position.last_y))
+        photo.modGPSData(info, jpg_name)
+
         return frame
     def get_pos_and_dir(self):
         x = self.position.last_x
@@ -70,12 +74,13 @@ class Zumi(object):
         pos, direction = self.position.calc_current_position()
         return pos, direction
     def get_Sensors(self,recalculate_direction = False):
-        frame = self.get_picture()
+        
         data = self.get_all_IR_data()
         if recalculate_direction:
             pos, direction = self.calc_pos_and_dir()
         else:
             pos, direction = self.get_pos_and_dir()
+        frame = self.get_picture()
         return frame, data, pos, direction
     def forward(self,speed=40,duration=1.0,correction = 4,repeat = 1,check_clearance = True):
         path_clear = True

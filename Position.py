@@ -8,6 +8,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import cv2
 
+
 class Position(object):
     def __init__(self,Number,direction):
         self.Number = Number
@@ -118,6 +119,7 @@ class Position(object):
             self.set_direction(deg)
         self.update_xy(pos)
         return self.direction    
+        
     
     def calc_current_position(self,show = False):
         top_image = self.get_overhead()
